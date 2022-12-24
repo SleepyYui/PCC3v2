@@ -1,0 +1,6 @@
+# build and packages
+**/node_modules
+**/.idea
+
+# environment packages
+.env
