@@ -1,6 +1,7 @@
 import * as events from "events";
 
 const logger = require('./handlers/logger.ts');
+const database = require('./handlers/database.ts');
 
 // discord imports
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
@@ -78,4 +79,6 @@ logger.startup({text: 'Requiring Handlers and Anti-Crash methods...'});
         handlerModule(client);
     });
 
+database.initialisation();
+// login
 const loggedin = client.login(process.env.TOKEN);

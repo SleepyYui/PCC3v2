@@ -1,3 +1,4 @@
+// @ts-ignore
 const fs = require("fs");
 // @ts-ignore
 const logger = require("./logger");

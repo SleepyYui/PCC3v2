@@ -7,7 +7,7 @@ const config = require("../botconfig/config.json");
 const logger = require("./logger");
 const dirSetup = config.slashCommandsDirs;
 module.exports = (client: { slashCommands: { set: (arg0: string, arg1: any) => void; }; on: (arg0: string, arg1: (guild: any) => void) => void; application: { commands: { set: (arg0: any[]) => Promise<any>; }; }; guilds: { cache: any[]; }; }) => {
-    try {
+    //try {
         let allCommands: any[] = [];
         readdirSync("./src/slashCommands/").forEach((dir: any) => {
             if(lstatSync(`./src/slashCommands/${dir}`).isDirectory()) {
@@ -15,7 +15,7 @@ module.exports = (client: { slashCommands: { set: (arg0: string, arg1: any) => v
                 //If its a valid cmd setup
                 if(cmdSetup && cmdSetup.Folder) {
                     //Set the SubCommand as a Slash Builder
-                    const subCommand = new SlashCommandBuilder().setName(String(cmdSetup.CmdName).replace(/\s+/g, '_').toLowerCase()).setDescription(String(cmdSetup.CmdDescription)).setDefaultMemberPermissions(cmdSetup.activeByDefault);
+                    const subCommand = new SlashCommandBuilder().setName(String(cmdSetup.CmdName).replace(/\s+/g, '_').toLowerCase()).setDescription(String(cmdSetup.CmdDescription))//.setDefaultMemberPermissions(cmdSetup.activeByDefault);
                     //Now for each file in that subcommand, add a command!
                     const slashCommands = readdirSync(`./src/slashCommands/${dir}/`).filter((file: string) => file.endsWith(".ts"));
                     for (let file of slashCommands) {
@@ -63,6 +63,7 @@ module.exports = (client: { slashCommands: { set: (arg0: string, arg1: any) => v
                                     }
                                     return subcommand;
                                 })
+                            logger.debug({ text: pull});
                             client.slashCommands.set(String(cmdSetup.CmdName).replace(/\s+/g, '_').toLowerCase() + pull.name, pull)
                         } else {
                             logger.error({ text: `Missing a help.name, or help.name is not a string.\n` + file});
@@ -133,6 +134,9 @@ module.exports = (client: { slashCommands: { set: (arg0: string, arg1: any) => v
                         logger.info({text: `${slashCommandsData.size} slashCommands (With ${slashCommandsData.map((d: { options: any; }) => d.options).flat().length} Subcommands) Loaded for ${client.guilds.cache.size} guilds.`});
                     }).catch((e) => logger.error({text: e}));
             } else {
+                logger.debug({text: allCommands});
+                logger.debug({text: allCommands[0].options});
+                logger.debug({text: allCommands[0].options[0].options});
                 client.guilds.cache.map(g => g).forEach((guild) => {
                     try {
                         guild.commands.set(allCommands)
@@ -140,6 +144,7 @@ module.exports = (client: { slashCommands: { set: (arg0: string, arg1: any) => v
                                 logger.info({text: `${slashCommandsData.size} slashCommands (With ${slashCommandsData.map(d => d.options).flat().length} Subcommands) Loaded for ${guild.name}.`});
                             }).catch((e: any) => logger.error({text: e}));
                     } catch (e) {
+                        logger.debug({text: "Line 143 | slashCommands.ts"});
                         logger.error({text: e});
                     }
                 });
@@ -155,11 +160,13 @@ module.exports = (client: { slashCommands: { set: (arg0: string, arg1: any) => v
                         }).catch((e: any) => logger.error({ text: e}));
                 }
             }catch (e){
+                logger.debug({text: "Line 159 | slashCommands.ts"});
                 logger.error({ text: e});
             }
         })
 
-    } catch (e) {
+    /*} catch (e) {
+        logger.debug({text: "Line 165 | slashCommands.ts"});
         logger.error({ text: e});
-    }
+    }*/
 };

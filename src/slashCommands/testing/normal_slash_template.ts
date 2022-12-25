@@ -1,6 +1,3 @@
-const { MessageEmbed } = require("discord.js");
-const ee = require("../../botconfig/embed.json");
-const settings = require("../../botconfig/settings.json");
 // @ts-ignore
 const logger = require("../../handlers/logger");
 module.exports = {
