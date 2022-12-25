@@ -1,5 +1,5 @@
 
-# PC Creator 3 Discord Bot
+# PC Creator Discord Bot
 
 The 3rd generation of the Bot used on the PC-Creator Discord Server
 
