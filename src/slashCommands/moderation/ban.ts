@@ -2,6 +2,8 @@
 const logger = require("../../handlers/logger");
 // @ts-ignore
 const database = require("../../handlers/database");
+// log that the current file was loaded
+logger.startup({ text: `${__filename.split("\\").at(-1)} was loaded` });
 module.exports = {
     name: "ban",
     description: "Bans a user",
@@ -35,9 +37,34 @@ module.exports = {
                 ban_reason = "No reason provided.";
             }
 
-            await guild.banMember(ban_user.id, { reason: ban_reason });
-            await database.addban(ban_user.id, ban_reason, '9999-12-31 23:59:59');
-            await interaction.reply({content: `Banned **${ban_user.name}**!`, ephemeral: true});
+            try {
+                await database.addban(ban_user.id, ban_reason, '9999-12-31 23:59:59');
+                try {
+                    await guild.members.ban(ban_user, { reason: ban_reason });
+                    await interaction.reply({content: `Banned **${ban_user.username}**!`, ephemeral: true});
+                } catch (err) {
+                    logger.error({text: err});
+                    interaction.reply({
+                        content: `Something went wrong whilst banning **${ban_user.username}**\n*User might be already banned or I don't have the permissions to ban them.*`,
+                        ephemeral: true
+                    });
+                }
+            } catch (err) {
+                logger.error({text: err});
+                try {
+                    await guild.members.ban(ban_user, { reason: ban_reason });
+                    await interaction.reply({content: `Banned **${ban_user.username}**!\n***COULD NOT SET ENTRY IN DATABASE!!! PLEASE REPORT THIS ERROR TO <@443769343138856961>***`, ephemeral: true});
+                } catch (err) {
+                    logger.error({text: err});
+                    interaction.reply({
+                        content: `Something went wrong whilst banning ${ban_user.username}\n***COULD NOT SET ENTRY IN DATABASE!!! PLEASE REPORT THIS ERROR TO <@443769343138856961>***`,
+                        ephemeral: true
+                    });
+                }
+            }
+
+
+
 
 
         } catch (e) {

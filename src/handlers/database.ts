@@ -66,9 +66,15 @@ async function addban(id: number, reason: string, time: string) {
     let conn;
     try {
         conn = await pool.getConnection();
-        const user = await conn.query(`SELECT * FROM \`users\` WHERE userid = '${id}'`);
+        const user = await conn.query(`SELECT * FROM \`users\` WHERE userid = ${id}`);
         if (user.length === 0) {
-            await conn.query(`INSERT INTO \`users\` (userid) VALUES ('${id}')`);
+            logger.debug({
+                text: `User ${id} not found in database, adding...`
+            })
+            await conn.query(`INSERT INTO \`users\` (userid) VALUES (${id})`);
+            logger.debug({
+                text: `User ${id} added...`
+            })
         }
         const rows
             = await conn.query("INSERT INTO bans (userid, reason, until) VALUES (?, ?, ?)", [id, reason, time]

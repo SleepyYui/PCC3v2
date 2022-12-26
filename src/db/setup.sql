@@ -1,12 +1,12 @@
 USE pc_creator;
 
 CREATE TABLE IF NOT EXISTS `users` (
-    userid INT NOT NULL,
+    userid BIGINT NOT NULL,
     PRIMARY KEY (userid)
 );
 
 CREATE TABLE IF NOT EXISTS `messages` (
-    userid INT NOT NULL,
+    userid BIGINT NOT NULL,
     messages VARCHAR(255) NULL,
     last_message DATETIME NULL,
     FOREIGN KEY (userid) REFERENCES `users` (userid)
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
 CREATE INDEX messages_userid_idx ON `messages` (userid);
 
 CREATE TABLE IF NOT EXISTS `warns` (
-    userid INT NOT NULL,
+    userid BIGINT NOT NULL,
     warn VARCHAR(255) NULL,
     warnid INT AUTO_INCREMENT,
     PRIMARY KEY (warnid),
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `warns` (
 CREATE INDEX warns_userid_idx ON `warns` (userid);
 
 CREATE TABLE IF NOT EXISTS `command_uses` (
-    userid INT NOT NULL,
+    userid BIGINT NOT NULL,
     command TEXT NOT NULL,
     commandid INT AUTO_INCREMENT,
     date DATETIME NOT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `command_uses` (
 CREATE INDEX command_uses_userid_idx ON `command_uses` (userid);
 
 CREATE TABLE IF NOT EXISTS `bans` (
-    userid INT NOT NULL,
+    userid BIGINT NOT NULL,
     reason MEDIUMTEXT NOT NULL,
     banid INT AUTO_INCREMENT,
     until DATETIME NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `bans` (
 );
 
 CREATE TABLE IF NOT EXISTS `join_leave` (
-    userid INT NOT NULL,
+    userid BIGINT NOT NULL,
     joinleave BOOLEAN NOT NULL,
     date DATETIME NOT NULL,
     joinid INT AUTO_INCREMENT,
