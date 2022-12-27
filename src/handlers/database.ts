@@ -11,6 +11,21 @@ const logger = require("../handlers/logger");
 // @ts-ignore
 const fs = require('fs');
 
+function addZero(str: string | number)
+{
+    return str < 10 ? ('0' + str) : str;
+}
+
+async function getdate() {
+    const currentdate = new Date();
+    return addZero(currentdate.getFullYear()) + "-" +
+        addZero(currentdate.getMonth() + 1) + "-" +
+        addZero(currentdate.getDate()) + " " +
+        addZero(currentdate.getHours()) + ":" +
+        addZero(currentdate.getMinutes()) + ":" +
+        addZero(currentdate.getSeconds());
+}
+
 async function initialisation() {
     let conn;
     logger.db({
@@ -43,6 +58,7 @@ async function initialisation() {
         logger.error({
             text: `Error connecting to database:\n` + err
         });
+        process.exit(1);
     }
 }
 
@@ -50,9 +66,7 @@ async function query(query: string) {
     let conn;
     try {
         conn = await pool.getConnection();
-        const rows
-            = await conn.query(query
-        );
+        const rows = await conn.query(query);
         await conn.release();
         return rows;
     } catch (err) {
@@ -62,34 +76,93 @@ async function query(query: string) {
     }
 }
 
-async function addban(id: number, reason: string, time: string) {
+async function addban(id: number, reason: string, time: string, invoker: number) {
     let conn;
-    try {
+    //try {
         conn = await pool.getConnection();
         const user = await conn.query(`SELECT * FROM \`users\` WHERE userid = ${id}`);
         if (user.length === 0) {
             logger.debug({
                 text: `User ${id} not found in database, adding...`
             })
-            await conn.query(`INSERT INTO \`users\` (userid) VALUES (${id})`);
+            await conn.query(`INSERT INTO \`users\` (userid)
+                              VALUES (${id})`);
             logger.debug({
                 text: `User ${id} added...`
             })
         }
+        const invokeuser = await conn.query(`SELECT * FROM \`users\` WHERE userid = ${invoker}`);
+        if (invokeuser.length === 0) {
+            logger.debug({
+                text: `User ${invoker} not found in database, adding...`
+            })
+            await conn.query(`INSERT INTO \`users\` (userid)
+                              VALUES (${invoker})`);
+            logger.debug({
+                text: `User ${invoker} added...`
+            })
+        }
+        let currdate = await getdate();
+        logger.debug({
+            text: currdate
+        });
         const rows
-            = await conn.query("INSERT INTO bans (userid, reason, until) VALUES (?, ?, ?)", [id, reason, time]
+            = await conn.query("INSERT INTO \`bans\` (userid, reason, until, date, invoked_by) VALUES (?, ?, ?, ?, ?)", [id, reason, time, currdate.toString(), invoker]
         );
         await conn.release();
         return rows;
-    } catch (err) {
+    /*} catch (err) {
         logger.error({
             text: `[${String(new Date).split(" ", 5).join(" ")}] Error querying MariaDB:\n` + err
         });
-    }
+    }*/
+}
+
+async function addunban(id: number, reason: string, invoker: number) {
+    let conn;
+    //try {
+        conn = await pool.getConnection();
+        const user = await conn.query(`SELECT * FROM \`users\` WHERE userid = ${id}`);
+        if (user.length === 0) {
+            logger.debug({
+                text: `User ${id} not found in database, adding...`
+            })
+            await conn.query(`INSERT INTO \`users\` (userid)
+                              VALUES (${id})`);
+            logger.debug({
+                text: `User ${id} added...`
+            })
+        }
+        const invokeuser = await conn.query(`SELECT * FROM \`users\` WHERE userid = ${invoker}`);
+        if (invokeuser.length === 0) {
+            logger.debug({
+                text: `User ${invoker} not found in database, adding...`
+            })
+            await conn.query(`INSERT INTO \`users\` (userid)
+                              VALUES (${invoker})`);
+            logger.debug({
+                text: `User ${invoker} added...`
+            })
+        }
+        let currdate = await getdate();
+        logger.debug({
+            text: currdate
+        });
+        const rows
+            = await conn.query("INSERT INTO \`unbans\` (userid, reason, date, invoked_by) VALUES (?, ?, ?, ?)", [id, reason, currdate.toString(), invoker]
+        );
+        await conn.release();
+        return rows;
+    /*} catch (err) {
+        logger.error({
+            text: `[${String(new Date).split(" ", 5).join(" ")}] Error querying MariaDB:\n` + err
+        });
+    }*/
 }
 
 module.exports = {
     initialisation,
     query,
-    addban
+    addban,
+    addunban
 }

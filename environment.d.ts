@@ -17,6 +17,7 @@ declare global {
             PREFIX: string;
             BOT_STATUS: string;
             BOT_STATUS_TYPE: string;
+            BOT_OWNER: number;
         }
     }
     function client(): void;

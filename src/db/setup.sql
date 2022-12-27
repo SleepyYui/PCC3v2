@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS `warns` (
     userid BIGINT NOT NULL,
     warn VARCHAR(255) NULL,
     warnid INT AUTO_INCREMENT,
+    invoked_by BIGINT NOT NULL,
     PRIMARY KEY (warnid),
     FOREIGN KEY (userid) REFERENCES `users` (userid)
 );
@@ -27,9 +28,9 @@ CREATE INDEX warns_userid_idx ON `warns` (userid);
 CREATE TABLE IF NOT EXISTS `command_uses` (
     userid BIGINT NOT NULL,
     command TEXT NOT NULL,
-    commandid INT AUTO_INCREMENT,
+    commanduseid INT AUTO_INCREMENT,
     date DATETIME NOT NULL,
-    PRIMARY KEY (commandid),
+    PRIMARY KEY (commanduseid),
     FOREIGN KEY (userid) REFERENCES `users` (userid)
 );
 
@@ -40,7 +41,19 @@ CREATE TABLE IF NOT EXISTS `bans` (
     reason MEDIUMTEXT NOT NULL,
     banid INT AUTO_INCREMENT,
     until DATETIME NOT NULL,
+    date DATETIME NOT NULL,
+    invoked_by BIGINT NOT NULL,
     PRIMARY KEY (banid),
+    FOREIGN KEY (userid) REFERENCES `users` (userid)
+);
+
+CREATE TABLE IF NOT EXISTS `unbans` (
+    userid BIGINT NOT NULL,
+    reason MEDIUMTEXT NOT NULL,
+    unbanid INT AUTO_INCREMENT,
+    date DATETIME NOT NULL,
+    invoked_by BIGINT NOT NULL,
+    PRIMARY KEY (unbanid),
     FOREIGN KEY (userid) REFERENCES `users` (userid)
 );
 

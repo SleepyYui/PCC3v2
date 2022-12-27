@@ -5,15 +5,15 @@ const database = require("../../handlers/database");
 // log that the current file was loaded
 logger.startup({ text: `${__filename.split("\\").at(-1)} was loaded` });
 module.exports = {
-    name: "ban",
-    description: "Bans a user",
+    name: "unban",
+    description: "Unbans a user",
     cooldown: 0,
     memberpermissions: [],
     requiredroles: [],
     alloweduserids: [],
     options: [
-        {"User": { name: "user", description: "Bans the selected user", required: true }},
-        {"String": { name: "reason", description: "Reason for the ban", required: false }}
+        {"User": { name: "user", description: "Unbans the selected user", required: true }},
+        {"String": { name: "reason", description: "Reason for the unban", required: false }}
     ],
     run: async (client: any, interaction: { reply?: any; member?: any; channelId?: any; guildId?: any; applicationId?: any; commandName?: any; deferred?: any; replied?: any; ephemeral?: any; options?: any; id?: any; createdTimestamp?: any; }) => {
         try{
@@ -31,33 +31,33 @@ module.exports = {
             })
 
 
-            let ban_user = options.getUser("user");
-            let ban_reason = options.getString("reason");
-            if (ban_reason == null) {
-                ban_reason = "No reason provided.";
+            let unban_user = options.getUser("user");
+            let unban_reason = options.getString("reason");
+            if (unban_reason == null) {
+                unban_reason = "No reason provided.";
             }
 
             try {
-                await database.addban(ban_user.id, ban_reason, '9999-12-31 23:59:59', member.id);
+                await database.addunban(unban_user.id, unban_reason, member.id);
                 try {
-                    await guild.members.ban(ban_user, { reason: ban_reason });
-                    await interaction.reply({content: `Banned **${ban_user.username}**!`, ephemeral: true});
+                    await guild.members.unban(unban_user, { reason: unban_reason });
+                    await interaction.reply({content: `Unbanned **${unban_user.username}**!`, ephemeral: true});
                 } catch (err) {
                     logger.error({text: err});
                     interaction.reply({
-                        content: `Something went wrong whilst banning **${ban_user.username}**!\n*User might be already banned or I don't have the permissions to ban them.*`,
+                        content: `Something went wrong whilst unbanning **${unban_user.username}**!\n*User might be already unbanned or I don't have the permissions to unban them.*`,
                         ephemeral: true
                     });
                 }
             } catch (err) {
                 logger.error({text: err});
                 try {
-                    await guild.members.ban(ban_user, { reason: ban_reason });
-                    await interaction.reply({content: `Banned **${ban_user.username}**!\n***COULD NOT SET ENTRY IN DATABASE!!! PLEASE REPORT THIS ERROR TO <@${process.env.BOT_OWNER}>!!!***`, ephemeral: true});
+                    await guild.members.unban(unban_user, { reason: unban_reason });
+                    await interaction.reply({content: `Unbanned **${unban_user.username}**!\n***COULD NOT SET ENTRY IN DATABASE!!! PLEASE REPORT THIS ERROR TO <@${process.env.BOT_OWNER}>!!!***`, ephemeral: true});
                 } catch (err) {
                     logger.error({text: err});
                     interaction.reply({
-                        content: `Something went wrong whilst banning **${ban_user.username}**!\n***COULD NOT SET ENTRY IN DATABASE!!! PLEASE REPORT THIS ERROR TO <@${process.env.BOT_OWNER}>!!!***`,
+                        content: `Something went wrong whilst unbanning **${unban_user.username}**!\n***COULD NOT SET ENTRY IN DATABASE!!! PLEASE REPORT THIS ERROR TO <@${process.env.BOT_OWNER}>!!!***`,
                         ephemeral: true
                     });
                 }
