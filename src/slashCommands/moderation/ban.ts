@@ -40,7 +40,7 @@ module.exports = {
             try {
                 await database.addban(ban_user.id, ban_reason, '9999-12-31 23:59:59', member.id);
                 try {
-                    await guild.members.ban(ban_user, { reason: ban_reason });
+                    await guild.members.ban(ban_user, { days:7, reason: ban_reason + " banned by " + member.tag + " (" + member.id + ")" });
                     await interaction.reply({content: `Banned **${ban_user.username}**!`, ephemeral: true});
                 } catch (err) {
                     logger.error({text: err});
@@ -52,7 +52,7 @@ module.exports = {
             } catch (err) {
                 logger.error({text: err});
                 try {
-                    await guild.members.ban(ban_user, { reason: ban_reason });
+                    await guild.members.ban(ban_user, { days:7, reason: ban_reason + " (BAN NOT LOGGED)" + " banned by " + member.tag + " (" + member.id + ")" });
                     await interaction.reply({content: `Banned **${ban_user.username}**!\n***COULD NOT SET ENTRY IN DATABASE!!! PLEASE REPORT THIS ERROR TO <@${process.env.BOT_OWNER}>!!!***`, ephemeral: true});
                 } catch (err) {
                     logger.error({text: err});
