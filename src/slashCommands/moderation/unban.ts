@@ -3,7 +3,7 @@ const logger = require("../../handlers/logger");
 // @ts-ignore
 const database = require("../../handlers/database");
 // log that the current file was loaded
-logger.startup({ text: `${__filename.split("\\").at(-1)} was loaded` });
+logger.startup({ text: `Slash Command ${__filename.split("\\").at(-1)} was loaded` });
 module.exports = {
     name: "unban",
     description: "Unbans a user",
