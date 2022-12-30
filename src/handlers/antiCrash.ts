@@ -23,7 +23,4 @@ module.exports = (client: any) => {
     process.on('uncaughtExceptionMonitor', (err: any, origin) => {
         logger.fatalError({err: err, value: 'uncaughtExceptionMonitor', origin: origin});
     });
-    process.on('multipleResolves', (type, promise, value) => {
-        logger.fatalError({err: type, origin: promise, value: value});
-    });
 };
