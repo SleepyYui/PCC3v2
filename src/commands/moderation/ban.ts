@@ -42,9 +42,9 @@ module.exports = {
                 // @ts-ignore
                 await database.addban(ban_user.id, ban_reason, '9999-12-31 23:59:59', message.author.id);
                 try {
-                    await guild.members.ban(ban_user, { days:7, reason: ban_reason + " banned by " + message.author.tag + " (" + message.author.id + ")" });
+                    await guild.members.ban(ban_user, { days:7, reason: ban_reason + " | banned by " + message.author.tag + " (" + message.author.id + ")" });
                     // @ts-ignore
-                    await message.channel.send({content: `Banned **${ban_user.username}**!`});
+                    await message.channel.send({content: `Banned **${ban_user.tag}**!`});
                 } catch (err) {
                     logger.error({text: err});
                     message.channel.send({
@@ -55,14 +55,14 @@ module.exports = {
             } catch (err) {
                 logger.error({text: err});
                 try {
-                    await guild.members.ban(ban_user, { days:7, reason: ban_reason + " (BAN NOT LOGGED)" + " banned by " + message.author.tag + " (" + message.author.id + ")"});
+                    await guild.members.ban(ban_user, { days:7, reason: ban_reason + " | (BAN NOT LOGGED)" + " | banned by " + message.author.tag + " (" + message.author.id + ")"});
                     // @ts-ignore
-                    await message.channel.send({content: `Banned **${ban_user.username}**!\n***COULD NOT SET ENTRY IN DATABASE!!! PLEASE REPORT THIS ERROR TO <@${process.env.BOT_OWNER}>!!!***`});
+                    await message.channel.send({content: `Banned **${ban_user.tag}**!\n***COULD NOT SET ENTRY IN DATABASE!!! PLEASE REPORT THIS ERROR TO <@${process.env.BOT_OWNER}>!!!***`});
                 } catch (err) {
                     logger.error({text: err});
                     message.channel.send({
                         // @ts-ignore
-                        content: `Something went wrong whilst banning **${ban_user.username}**!\n***COULD NOT SET ENTRY IN DATABASE!!! PLEASE REPORT THIS ERROR TO <@${process.env.BOT_OWNER}>!!!***`,
+                        content: `Something went wrong whilst banning **${ban_user.tag}**!\n***COULD NOT SET ENTRY IN DATABASE!!! PLEASE REPORT THIS ERROR TO <@${process.env.BOT_OWNER}>!!!***`,
                     });
                 }
             }
