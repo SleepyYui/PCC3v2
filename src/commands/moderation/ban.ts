@@ -48,7 +48,7 @@ module.exports = {
                     logger.error({text: err});
                     message.channel.send({
                         // @ts-ignore
-                        content: `Something went wrong whilst banning **${ban_user.username}**!\n*User might be already banned or I don't have the permissions to ban them.*`,
+                        content: `Something went wrong whilst banning **${ban_user.tag}**!\n*User might be already banned or I don't have the permissions to ban them.*`,
                     });
                 }
             } catch (err) {
