@@ -27,8 +27,7 @@ module.exports = {
                     logger.debug({ text: `Trying to get user with id ${userid}` });
                     ban_user = await guild.members.fetch(userid);
                 } catch (e) {
-                    if (!e) return message.reply("Couldn't find user **" + args[0] + "**!\nPlease mention a user or use a valid user ID!")
-                    return message.reply(e)
+                    return message.reply("Couldn't find user **" + args[0] + "**!\nPlease mention a user or use a valid user ID!")
                 }
             }
             let ban_reason
