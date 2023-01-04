@@ -18,6 +18,7 @@ module.exports = {
 
     run: async (client: any, message: { reply?: any; author?: any; channel?: any; guild?: any; client?: any; content?: string; mentions?: { users: { first: () => any; }; }; }, args: any[], plusArgs: any, cmdUser: any, text: any, prefix: any) => {
         try{
+            if (!message.author.permissions.has("BAN_MEMBERS")) return;
 
             const { guild } = message;
             let ban_user
@@ -36,10 +37,10 @@ module.exports = {
             } else {
                 ban_reason = "No reason provided.";
             }
-
+            await database.addCommandUse("ban", cmdUser.id, args);
             try {
                 // @ts-ignore
-                await database.addban(ban_user.id, ban_reason, '9999-12-31 23:59:59', message.author.id);
+                await database.addBan(ban_user.id, ban_reason, '9999-12-31 23:59:59', message.author.id);
                 try {
                     await guild.members.ban(ban_user, { days:7, reason: ban_reason + " | banned by " + message.author.tag + " (" + message.author.id + ")" });
                     // @ts-ignore

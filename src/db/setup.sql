@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `command_uses` (
     command TEXT NOT NULL,
     commanduseid INT AUTO_INCREMENT,
     date DATETIME NOT NULL,
+    args TEXT NULL,
     PRIMARY KEY (commanduseid),
     FOREIGN KEY (userid) REFERENCES `users` (userid)
 );

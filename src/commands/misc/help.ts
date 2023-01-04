@@ -29,6 +29,7 @@ module.exports = {
                     text: `If you need help, just ping a @helper`,
                     iconURL: client.user.displayAvatarURL()
                 });
+            await database.addCommandUse("help", cmdUser.id, undefined);
             message.reply({embeds: [embed]});
         } catch (e) {
             logger.error({ text: e});

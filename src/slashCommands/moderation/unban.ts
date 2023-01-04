@@ -38,7 +38,7 @@ module.exports = {
             }
 
             try {
-                await database.addunban(unban_user.id, unban_reason, member.id);
+                await database.addUnban(unban_user.id, unban_reason, member.id);
                 try {
                     await guild.members.unban(unban_user, { reason: unban_reason });
                     await interaction.reply({content: `Unbanned **${unban_user.username}**!`, ephemeral: true});
