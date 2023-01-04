@@ -179,9 +179,16 @@ async function addCommandUse(command: string, invoker: number, args: any) {
         logger.debug({
             text: currdate
         });
-        const rows
-            = await conn.query("INSERT INTO \`command_uses\` (userid, command, date, args) VALUES (?, ?, ?, ?)", [invoker, command, currdate.toString(), args]
-        );
+        let rows;
+        if (args != undefined) {
+            rows
+                = await conn.query("INSERT INTO \`command_uses\` (userid, command, date, args) VALUES (?, ?, ?, ?)", [invoker, command, currdate.toString(), args]
+            );
+        } else {
+            rows
+                = await conn.query("INSERT INTO \`command_uses\` (userid, command, date) VALUES (?, ?, ?)", [invoker, command, currdate.toString()]
+            );
+        }
         await conn.release();
         return rows;
     } catch (err) {
